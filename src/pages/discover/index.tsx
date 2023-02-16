@@ -1,10 +1,6 @@
 import { DiscoverCategories } from "@/components/discover/categories/categories"
 import { DiscoverDaoTable } from "@/components/discover/dao-table"
-import { pinnedProjects, projects } from "@/mock/projects"
-import { classNames } from "@/utils"
-import { Menu, Transition } from "@headlessui/react"
-import { MagnifyingGlassIcon, EllipsisVerticalIcon, ChevronRightIcon } from "@heroicons/react/20/solid"
-import { Fragment } from "react"
+import { MagnifyingGlassIcon } from "@heroicons/react/20/solid"
 
 const Discover = () => {
   return (
