@@ -23,7 +23,8 @@ const Discover = () => {
             Create
           </button>
         </div>
-      </div><div className="py-4 px-4 sm:px-6 lg:px-8 border-b border-gray-200">
+      </div>
+      <div className="py-4 px-4 sm:px-6 lg:px-8 border-b border-gray-200">
         <form className="flex w-full md:ml-0" action="#" method="GET">
           <label htmlFor="search-field" className="sr-only">
             Search

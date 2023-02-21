@@ -11,7 +11,7 @@ export const taskNavigations = [
 ];
 
 export const userNavigations = [
-  { name: 'My Org', href: '#', icon: GlobeAltIcon, current: false },
+  { name: 'My Org', href: '/myorg', icon: GlobeAltIcon, current: false },
   { name: 'Discover', href: '/discover', icon: BriefcaseIcon, current: false },
   { name: 'Bounties', href: '#', icon: CurrencyDollarIcon, current: false },
   { name: 'Chat', href: '#', icon: ChatBubbleLeftRightIcon, current: false },

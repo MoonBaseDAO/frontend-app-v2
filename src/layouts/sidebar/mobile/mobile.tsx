@@ -55,7 +55,7 @@ export const MobileSidebar = ({sidebarOpen, setSidebarOpen}: SidebarProps) => {
               <div className="flex flex-shrink-0 items-center px-4">
                 <img
                   className="h-8 w-auto"
-                  src="https://tailwindui.com/img/logos/mark.svg?color=purple&shade=500"
+                  src="logo.jpg"
                   alt="Your Company"
                 />
                 <h2 className="text-purple-500 px-4 font-bold">MoonBase</h2>
