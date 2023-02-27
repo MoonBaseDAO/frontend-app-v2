@@ -1,7 +1,7 @@
 import DragList from '@/components/inbox/drag-list';
 import { DragDropContext } from 'react-beautiful-dnd';
 
-const Inbox = () => {
+const Tasks = () => {
   return (
     <>
       <DragList />
@@ -9,4 +9,4 @@ const Inbox = () => {
   );
 }
 
-export default Inbox;
+export default Tasks;
