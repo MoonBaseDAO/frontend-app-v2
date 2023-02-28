@@ -2,7 +2,7 @@ import { BriefcaseIcon, CurrencyDollarIcon, GlobeAltIcon } from '@heroicons/reac
 import { Bars4Icon, BoltIcon, CalendarDaysIcon, ChatBubbleLeftRightIcon, ClockIcon, HomeIcon, InboxIcon, StarIcon, TrashIcon, UserGroupIcon } from '@heroicons/react/24/outline';
 
 export const taskNavigations = [
-  { name: 'Inbox', href: '/inbox', icon: InboxIcon, current: false },
+  { name: 'Tasks', href: '/tasks', icon: InboxIcon, current: false },
   { name: 'Today', href: '#', icon: CalendarDaysIcon, current: false },
   { name: 'Upcoming', href: '#', icon: BoltIcon, current: false },
   { name: 'Important', href: '#', icon: StarIcon, current: false },

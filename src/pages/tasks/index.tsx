@@ -1,12 +1,11 @@
-import DragList from '@/components/inbox/drag-list';
-import { DragDropContext } from 'react-beautiful-dnd';
+import Board from "@/components/tasks/board";
 
-const Tasks = () => {
+export default function Home() {
   return (
     <>
-      <DragList />
+      <div className="p-5">
+        <Board />
+      </div>
     </>
   );
 }
-
-export default Tasks;
