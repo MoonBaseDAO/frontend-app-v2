@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { EllipsisVerticalIcon, PlusCircleIcon } from "@heroicons/react/24/outline";
 import CardItem from "./card";
 import BoardData from "./mockData.json";
-import { CardInterface } from "@/interface/cardInterface";
+import { CardInterface } from "@/interface/card";
 
 const createGuidId = () => {
 	return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {

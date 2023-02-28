@@ -1,4 +1,4 @@
-import { UserInterface } from "./userInterface";
+import { UserInterface } from "./user";
 
 export interface CardInterface {
   id: string;

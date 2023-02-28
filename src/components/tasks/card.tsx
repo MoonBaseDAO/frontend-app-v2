@@ -6,8 +6,8 @@ import {
 import { Draggable } from "react-beautiful-dnd";
 
 import Image from "next/image";
-import { UserInterface } from "@/interface/userInterface";
-import { CardInterface } from "@/interface/cardInterface";
+import { UserInterface } from "@/interface/user";
+import { CardInterface } from "@/interface/card";
 
 const CardItem = ({ data, index }: { data: CardInterface, index: number }) => {
 	return (
