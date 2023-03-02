@@ -1,21 +1,48 @@
+import { getConfig } from "@/config/near";
 import { initSDK, wallet, signOut, signIn } from "@/near-api/near";
+import { Contract } from "near-api-js";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 
-export const useNear = (): [boolean, boolean, string | null, (type: string) => void]  => {
+declare global {
+  interface Window {
+    accountId: string;
+    factoryContract: any;
+  }
+}
+
+const nearConfig = getConfig(process.env.NODE_ENV || 'development');
+
+export const useNear = (): [any, boolean, boolean, string | null, (type: string) => void] => {
   const router = useRouter();
   const [isPending, setPending] = useState<boolean>(false);
   const [isConnected, setConnected] = useState<boolean>(false);
   const [accountId, setAccountId] = useState<string | null>(null);
+  const [factoryContract, setFactoryContract] = useState<any>(null);
 
   useEffect(() => {
     initSDK();
-
     if (wallet?.getAccountId()) {
       setConnected(true);
       setAccountId(wallet?.getAccountId());
+      initContracts();
     }
-  }, [wallet]);
+  }, []);
+
+  const initContracts = async () => {
+    if (!wallet?.getAccountId) return;
+
+    const contract = await new Contract(
+      wallet?.account(),
+      nearConfig.contractName,
+      {
+        viewMethods: ['get_dao_list', 'get_number_daos', 'get_daos'],
+        changeMethods: ['create']
+      }
+    );
+
+    setFactoryContract(contract);
+  }
 
   const connectWithNear = async () => {
     if (isConnected) {
@@ -36,5 +63,5 @@ export const useNear = (): [boolean, boolean, string | null, (type: string) => v
       connectWithNear();
   }
 
-  return [isConnected, isPending, accountId, handleConnect];
+  return [factoryContract, isConnected, isPending, accountId, handleConnect];
 }

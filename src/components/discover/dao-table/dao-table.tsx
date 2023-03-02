@@ -1,8 +1,25 @@
+import { useContract } from "@/hooks/useContract";
+import { useNear } from "@/hooks/useNear";
 import { projects } from "@/mock/projects";
 import { classNames } from "@/utils";
 import { ChevronRightIcon } from "@heroicons/react/24/outline";
+import { useEffect, useState } from "react";
 
 export const DiscoverDaoTable = () => {
+  const [ factoryContract ] = useNear();
+  const [ getDaoList ] = useContract(factoryContract);
+  const [daoList, setDaoList] = useState<any>([]);
+
+  const fetchDaoList = async (start: number, limit: number) => {
+    const list = await getDaoList(start, limit);
+    setDaoList(list);
+  }
+
+  useEffect(() => {
+    if(factoryContract)
+      fetchDaoList(0, 100);
+  }, [factoryContract])
+
   return (
     <>
       <div className="mt-10 sm:hidden">
