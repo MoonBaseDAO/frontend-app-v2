@@ -1,13 +1,14 @@
 import { useContract } from "@/hooks/useContract";
 import { useNear } from "@/hooks/useNear";
-import { projects } from "@/mock/projects";
-import { classNames } from "@/utils";
-import { ChevronRightIcon } from "@heroicons/react/24/outline";
+import { getDaoId } from "@/utils";
+import { ArchiveBoxIcon, FolderIcon } from "@heroicons/react/20/solid";
 import { useEffect, useState } from "react";
+
+const daoAvatar = "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60";
 
 export const DiscoverDaoTable = () => {
   const { factoryContract } = useNear();
-  const [ getDaoList ] = useContract(factoryContract);
+  const [getDaoList] = useContract(factoryContract);
   const [daoList, setDaoList] = useState<any>([]);
 
   const fetchDaoList = async (start: number, limit: number) => {
@@ -16,117 +17,51 @@ export const DiscoverDaoTable = () => {
   }
 
   useEffect(() => {
-    if(factoryContract)
+    if (factoryContract)
       fetchDaoList(0, 100);
   }, [factoryContract])
 
   return (
-    <>
-      <div className="mt-10 sm:hidden">
-        <div className="px-4 sm:px-6">
-          <h2 className="text-sm font-medium text-gray-900">Top Trending DAOs</h2>
-        </div>
-        <ul role="list" className="mt-3 divide-y divide-gray-100 border-t border-gray-200">
-          {projects.map((project) => (
-            <li key={project.id}>
-              <a href="#" className="group flex items-center justify-between px-4 py-4 hover:bg-gray-50 sm:px-6">
-                <span className="flex items-center space-x-3 truncate">
-                  <span
-                    className={classNames(project.bgColorClass, 'w-2.5 h-2.5 flex-shrink-0 rounded-full')}
-                    aria-hidden="true"
-                  />
-                  <span className="truncate text-sm font-medium leading-6">
-                    {project.title} <span className="truncate font-normal text-gray-500">in {project.team}</span>
+    <div className="my-6 px-4 sm:px-6 lg:px-8">
+      <ul role="list" className="mt-3 grid grid-cols-1 gap-6 sm:grid-cols-4 lg:grid-cols-6">
+        {daoList.map((daoAddr: string) => (
+          <li key={daoAddr} className="col-span-1 divide-y divide-gray-200 rounded-lg bg-white shadow">
+            <div className="flex w-full items-center justify-between space-x-6 p-6">
+              <div className="flex-1 truncate">
+                <div className="flex items-center space-x-3">
+                  <h3 className="truncate text-sm font-medium text-gray-900">{getDaoId(daoAddr)}</h3>
+                  <span className="inline-block flex-shrink-0 rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-800">
+                    DAO
                   </span>
-                </span>
-                <ChevronRightIcon
-                  className="ml-4 h-5 w-5 text-gray-400 group-hover:text-gray-500"
-                  aria-hidden="true"
-                />
-              </a>
-            </li>
-          ))}
-        </ul>
-      </div>
-      <div className="mt-8 hidden sm:block">
-        <div className="inline-block min-w-full border-b border-gray-200 align-middle">
-          <table className="min-w-full">
-            <thead>
-              <tr className="border-t border-gray-200">
-                <th
-                  className="border-b border-gray-200 bg-gray-50 px-6 py-3 text-left text-sm font-semibold text-gray-900"
-                  scope="col"
-                >
-                  <span className="lg:pl-2">Top Trending DAOs</span>
-                </th>
-                <th
-                  className="border-b border-gray-200 bg-gray-50 px-6 py-3 text-left text-sm font-semibold text-gray-900"
-                  scope="col"
-                >
-                  Members
-                </th>
-                <th
-                  className="hidden border-b border-gray-200 bg-gray-50 px-6 py-3 text-right text-sm font-semibold text-gray-900 md:table-cell"
-                  scope="col"
-                >
-                  Last updated
-                </th>
-                <th
-                  className="border-b border-gray-200 bg-gray-50 py-3 pr-6 text-right text-sm font-semibold text-gray-900"
-                  scope="col"
-                />
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-100 bg-white">
-              {projects.map((project) => (
-                <tr key={project.id}>
-                  <td className="w-full max-w-0 whitespace-nowrap px-6 py-3 text-sm font-medium text-gray-900">
-                    <div className="flex items-center space-x-3 lg:pl-2">
-                      <div
-                        className={classNames(project.bgColorClass, 'flex-shrink-0 w-2.5 h-2.5 rounded-full')}
-                        aria-hidden="true"
-                      />
-                      <a href="#" className="truncate hover:text-gray-600">
-                        <span>
-                          {project.title} <span className="font-normal text-gray-500">in {project.team}</span>
-                        </span>
-                      </a>
-                    </div>
-                  </td>
-                  <td className="px-6 py-3 text-sm font-medium text-gray-500">
-                    <div className="flex items-center space-x-2">
-                      <div className="flex flex-shrink-0 -space-x-1">
-                        {project.members.map((member) => (
-                          <img
-                            key={member.handle}
-                            className="h-6 w-6 max-w-none rounded-full ring-2 ring-white"
-                            src={member.imageUrl}
-                            alt={member.name}
-                          />
-                        ))}
-                      </div>
-                      {project.totalMembers > project.members.length ? (
-                        <span className="flex-shrink-0 text-xs font-medium leading-5">
-                          +{project.totalMembers - project.members.length}
-                        </span>
-                      ) : null}
-                    </div>
-                  </td>
-                  <td className="hidden whitespace-nowrap px-6 py-3 text-right text-sm text-gray-500 md:table-cell">
-                    {project.lastUpdated}
-                  </td>
-                  <td className="whitespace-nowrap px-6 py-3 text-right text-sm font-medium">
-                    <a href="#" className="text-indigo-600 hover:text-indigo-900">
-                      Join
-                    </a>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </>
-
+                </div>
+                <p className="mt-1 truncate text-sm text-gray-500">{daoAddr}</p>
+              </div>
+            </div>
+            <div>
+              <div className="-mt-px flex divide-x divide-gray-200">
+                <div className="flex w-0 flex-1">
+                  <a
+                    href={'#'}
+                    className="relative -mr-px inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-bl-lg border border-transparent py-4 text-sm font-semibold text-gray-900"
+                  >
+                    <ArchiveBoxIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
+                    View
+                  </a>
+                </div>
+                <div className="-ml-px flex w-0 flex-1">
+                  <a
+                    href={`/dao/${daoAddr}`}
+                    className="relative inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-br-lg border border-transparent py-4 text-sm font-semibold text-gray-900"
+                  >
+                    <FolderIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
+                    Select
+                  </a>
+                </div>
+              </div>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }
