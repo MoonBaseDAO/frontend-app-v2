@@ -6,7 +6,7 @@ import { ChevronRightIcon } from "@heroicons/react/24/outline";
 import { useEffect, useState } from "react";
 
 export const DiscoverDaoTable = () => {
-  const [ factoryContract ] = useNear();
+  const { factoryContract } = useNear();
   const [ getDaoList ] = useContract(factoryContract);
   const [daoList, setDaoList] = useState<any>([]);
 

@@ -13,7 +13,15 @@ declare global {
 
 const nearConfig = getConfig(process.env.NODE_ENV || 'development');
 
-export const useNear = (): [any, boolean, boolean, string | null, (type: string) => void] => {
+interface NearHookInterface {
+  factoryContract: any
+  isConnected: boolean
+  isPending: boolean
+  accountId: string | null,
+  handleConnect: (type: string) => void
+}
+
+export const useNear = (): NearHookInterface => {
   const router = useRouter();
   const [isPending, setPending] = useState<boolean>(false);
   const [isConnected, setConnected] = useState<boolean>(false);
@@ -63,5 +71,5 @@ export const useNear = (): [any, boolean, boolean, string | null, (type: string)
       connectWithNear();
   }
 
-  return [factoryContract, isConnected, isPending, accountId, handleConnect];
+  return { factoryContract, isConnected, isPending, accountId, handleConnect };
 }
