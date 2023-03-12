@@ -4,7 +4,7 @@ import { Menu, Transition } from "@headlessui/react"
 import { Fragment } from "react"
 
 export const MobileAccountDropDown = () => {
-  const [isConnected, isPending, accountId, handleConnect] = useNear();
+  const { isConnected, handleConnect } = useNear();
 
   const handleClick = () => {
     handleConnect('Near');
