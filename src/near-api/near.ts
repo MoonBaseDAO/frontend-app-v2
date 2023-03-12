@@ -1,4 +1,4 @@
-import { Near, WalletConnection, keyStores, utils } from "near-api-js";
+import { Contract, Near, WalletConnection, keyStores, utils } from "near-api-js";
 import { WALLET } from "@/constants/wallet";
 
 let near: Near | null = null;

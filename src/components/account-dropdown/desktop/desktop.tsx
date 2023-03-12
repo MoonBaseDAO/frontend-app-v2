@@ -5,7 +5,7 @@ import { ChevronUpDownIcon } from "@heroicons/react/20/solid";
 import { Fragment } from "react";
 
 export const DesktopAccountDropDown = () => {
-  const [isConnected, isPending, accountId, handleConnect] = useNear();
+  const { isConnected, accountId, handleConnect } = useNear();
 
   const handleClick = () => {
     handleConnect('Near');
