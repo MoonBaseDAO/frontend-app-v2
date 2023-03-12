@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 const useApi = (url: string) => {
   const [loading, setLoading] = useState(true);
-  const [data, setData] = useState(null);
+  const [data, setData] = useState<any>(null);
 
   const fetchApi = () => {
     fetch(url) 
