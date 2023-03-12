@@ -18,6 +18,7 @@ interface NearHookInterface {
   isConnected: boolean
   isPending: boolean
   accountId: string | null,
+  getDaoContract: (addr: string) => any
   handleConnect: (type: string) => void
 }
 
@@ -27,6 +28,7 @@ export const useNear = (): NearHookInterface => {
   const [isConnected, setConnected] = useState<boolean>(false);
   const [accountId, setAccountId] = useState<string | null>(null);
   const [factoryContract, setFactoryContract] = useState<any>(null);
+  const [daoContract, setDaoContract] = useState<any>(null);
 
   useEffect(() => {
     initSDK();
@@ -52,6 +54,32 @@ export const useNear = (): NearHookInterface => {
     setFactoryContract(contract);
   }
 
+  const getDaoContract = (addr: string) => {
+    if (!wallet?.getAccountId) return;
+
+    const daoContract = new Contract(wallet?.account(), addr, {
+      viewMethods: [
+        'get_config',
+        'get_policy',
+        'get_staking_contract',
+        'get_available_amount',
+        'delegation_total_supply',
+        'get_proposals',
+        'get_last_proposal_id',
+        'get_proposal',
+        'get_bounty',
+        'get_bounties',
+        'get_last_bounty_id',
+        'get_bounty_claims',
+        'get_bounty_number_of_claims',
+        'delegation_balance_of',
+        'has_blob'
+      ],
+      changeMethods: ['add_proposal', 'act_proposal']
+    });
+    return daoContract;
+  }
+
   const connectWithNear = async () => {
     if (isConnected) {
       await signOut();
@@ -71,5 +99,5 @@ export const useNear = (): NearHookInterface => {
       connectWithNear();
   }
 
-  return { factoryContract, isConnected, isPending, accountId, handleConnect };
+  return { factoryContract, isConnected, isPending, accountId, handleConnect, getDaoContract };
 }

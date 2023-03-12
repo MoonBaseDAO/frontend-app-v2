@@ -4,6 +4,7 @@ export const classNames = (...classes: any) => {
 }
 
 export const getDaoId = (daoAddr: string) => {
+  if(!daoAddr) return "";
   const names = daoAddr.split('.');
   return names[0];
 }
