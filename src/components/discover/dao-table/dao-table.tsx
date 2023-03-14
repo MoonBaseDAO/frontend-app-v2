@@ -1,3 +1,4 @@
+import { Loading } from "@/components/loading";
 import { useContract } from "@/hooks/useContract";
 import { useNear } from "@/hooks/useNear";
 import { getDaoId } from "@/utils";
@@ -10,10 +11,12 @@ export const DiscoverDaoTable = () => {
   const { factoryContract } = useNear();
   const [getDaoList] = useContract(factoryContract);
   const [daoList, setDaoList] = useState<any>([]);
+  const [isLoading, setLoading] = useState(true);
 
   const fetchDaoList = async (start: number, limit: number) => {
     const list = await getDaoList(start, limit);
     setDaoList(list);
+    setLoading(false);
   }
 
   useEffect(() => {
@@ -23,6 +26,7 @@ export const DiscoverDaoTable = () => {
 
   return (
     <div className="my-6 px-4 sm:px-6 lg:px-8">
+      {isLoading && <Loading />}
       <ul role="list" className="mt-3 grid grid-cols-1 gap-6 sm:grid-cols-4 lg:grid-cols-6">
         {daoList.map((daoAddr: string) => (
           <li key={daoAddr} className="col-span-1 divide-y divide-gray-200 rounded-lg bg-white shadow">

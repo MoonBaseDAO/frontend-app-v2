@@ -8,3 +8,10 @@ export const getDaoId = (daoAddr: string) => {
   const names = daoAddr.split('.');
   return names[0];
 }
+
+export const convertDuration = (duration: number) => {
+  let utcSeconds = duration / 1e9;
+  let epoch = new Date(0);
+  epoch.setUTCSeconds(utcSeconds);
+  return epoch;
+};

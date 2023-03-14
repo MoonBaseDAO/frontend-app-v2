@@ -1,49 +1,17 @@
-import { useDaoContract } from "@/hooks/useDaoContract";
+import { Loading } from "@/components/loading";
 import { useNear } from "@/hooks/useNear";
-import { getDaoId } from "@/utils";
-import { EnvelopeIcon } from "@heroicons/react/20/solid";
+import { convertDuration, getDaoId } from "@/utils";
+import { ClockIcon, EnvelopeIcon } from "@heroicons/react/20/solid";
+import { HandThumbDownIcon, HandThumbUpIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
-const applications = [
-  {
-    applicant: {
-      name: 'Ricardo Cooper',
-      email: 'ricardo.cooper@example.com',
-      imageUrl:
-        'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    },
-    date: '2020-01-07',
-    dateFull: 'January 7, 2020',
-    stage: 'Completed phone screening',
-    href: '#',
-  },
-  {
-    applicant: {
-      name: 'Kristen Ramos',
-      email: 'kristen.ramos@example.com',
-      imageUrl:
-        'https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    },
-    date: '2020-01-07',
-    dateFull: 'January 7, 2020',
-    stage: 'Completed phone screening',
-    href: '#',
-  },
-  {
-    applicant: {
-      name: 'Ted Fox',
-      email: 'ted.fox@example.com',
-      imageUrl:
-        'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    },
-    date: '2020-01-07',
-    dateFull: 'January 7, 2020',
-    stage: 'Completed phone screening',
-    href: '#',
-  },
-]
+const colors: {[key: string]: string} = {
+  'Approved': 'green',
+  'InProgress': 'blue',
+  'Expired': 'red'
+}
 
 const DaoDetailPage: NextPage = () => {
   const router = useRouter();
@@ -52,15 +20,17 @@ const DaoDetailPage: NextPage = () => {
   const { getDaoContract } = useNear();
   const [daoConfig, setDaoConfig] = useState<any>(null);
   const [daoProposals, setDaoProposals] = useState<any>(null);
+  const [isLoading, setLoading] = useState(true);
 
   const getInfos = async () => {
     if (!addr || daoConfig != null) return;
     const contract = getDaoContract(addr);
     const config = await contract.get_config();
     const proposals = await contract.get_proposals({ from_index: 0, limit: 100 });
-    console.log(proposals);
+    const sorted_proposals = proposals.sort((a: any, b: any) => b.submission_time - a.submission_time);
     setDaoConfig(config);
-    setDaoProposals(proposals);
+    setDaoProposals(sorted_proposals);
+    setLoading(false);
   }
 
   useEffect(() => {
@@ -69,6 +39,7 @@ const DaoDetailPage: NextPage = () => {
 
   return (
     <>
+      {isLoading && <Loading/>}
       <div className="overflow-hidden bg-white">
         <div className="px-4 py-5 sm:px-6">
           <h3 className="text-base font-semibold leading-6 text-gray-900">{getDaoId(addr)}</h3>
@@ -109,12 +80,31 @@ const DaoDetailPage: NextPage = () => {
                                 </div>
                                 <div className="hidden md:block">
                                   <div>
-                                    <p className="text-sm text-gray-900">
-                                      Applied on <time dateTime={proposal.submission_time}>{proposal.submission_time}</time>
+                                    <p className="text-sm text-gray-900 flex items-center mb-2">
+                                      <ClockIcon className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400" aria-hidden="true"/>
+                                      <span>Applied on </span>
+                                      <time>{convertDuration(proposal.submission_time as number).toDateString()}</time>
+                                      <time>{convertDuration(proposal.submission_time as number).toLocaleTimeString()}</time>
                                     </p>
-                                    <span className="inline-flex items-center rounded-md bg-green-100 px-2.5 py-0.5 text-sm font-medium text-green-800">
+                                    <span className={`inline-flex uppercase items-center rounded-md bg-${colors[proposal.status]}-100 px-2.5 py-0.5 text-sm font-medium text-${colors[proposal.status]}-800`}>
                                       {proposal.status}
                                     </span>
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="min-w-0 px-4 md:grid md:grid-cols-1">
+                                <div className="flex items-center space-x-5">
+                                  <div className="flex items-center space-x-2">
+                                    <HandThumbUpIcon className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400" aria-hidden="true"/>
+                                    <span>{proposal.vote_counts.council && proposal.vote_counts.council[0] ? proposal.vote_counts?.council[0]: 0}</span>
+                                  </div>
+                                  <div className="flex items-center space-x-2">
+                                    <TrashIcon className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400" aria-hidden="true"/>
+                                    <span>{proposal.vote_counts.council && proposal.vote_counts.council[1] ? proposal.vote_counts?.council[1]: 0}</span>
+                                  </div>
+                                  <div className="flex items-center space-x-2">
+                                    <HandThumbDownIcon className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400" aria-hidden="true"/>
+                                    <span>{proposal.vote_counts.council && proposal.vote_counts.council[2] ? proposal.vote_counts?.council[2]: 0}</span>
                                   </div>
                                 </div>
                               </div>
