@@ -1,8 +1,6 @@
 import useApi from '@/hooks/useApi';
 import { Topbar } from '@/layouts/topbar';
-import BoardData from "../mock/tasks";
 
-import { Fragment } from 'react'
 import { ChatBubbleLeftEllipsisIcon, TagIcon, UserCircleIcon } from '@heroicons/react/20/solid'
 
 const activity = [
