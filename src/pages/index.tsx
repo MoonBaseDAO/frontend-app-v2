@@ -1,8 +1,7 @@
 import useApi from '@/hooks/useApi';
 import { Topbar } from '@/layouts/topbar';
-import BoardData from "../mock/tasks";
+import MsgBox from '@/components/overview/msgbox';
 
-import { Fragment } from 'react'
 import { ChatBubbleLeftEllipsisIcon, TagIcon, UserCircleIcon } from '@heroicons/react/20/solid'
 
 const activity = [
@@ -56,7 +55,7 @@ export default function Home() {
   return (
     <>
       <Topbar title="Overview" />
-      <div className="flow-root p-5">
+      {/* <div className="flow-root p-5">
         <ul role="list" className="-mb-8">
           {data.messages?.map((userMsg: any, idx: any) => (
             <li key={idx}>
@@ -94,6 +93,9 @@ export default function Home() {
             </li>
           ))}
         </ul>
+      </div> */}
+      <div className='p-3'>
+        <MsgBox />
       </div>
     </>
   )
