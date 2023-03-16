@@ -1,1 +1,1 @@
-export * from './destop';
+export * from './desktop';
