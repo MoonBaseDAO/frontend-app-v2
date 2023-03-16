@@ -1,8 +1,7 @@
 import useApi from '@/hooks/useApi';
 import { Topbar } from '@/layouts/topbar';
-import BoardData from "../mock/tasks";
+import MsgBox from '@/components/overview/msgbox';
 
-import { Fragment } from 'react'
 import { ChatBubbleLeftEllipsisIcon, TagIcon, UserCircleIcon } from '@heroicons/react/20/solid'
 
 const activity = [
@@ -94,6 +93,9 @@ export default function Home() {
             </li>
           ))}
         </ul>
+      </div>
+      <div className='p-10'>
+        <MsgBox />
       </div>
     </>
   )
