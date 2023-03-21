@@ -3,15 +3,16 @@ import { useContract } from "@/hooks/useContract";
 import { useNear } from "@/hooks/useNear";
 import { getDaoId } from "@/utils";
 import { ArchiveBoxIcon, FolderIcon } from "@heroicons/react/20/solid";
+import { PlusCircleIcon } from "@heroicons/react/24/outline";
 import { useEffect, useState } from "react";
-
-const daoAvatar = "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60";
+import { CreateDAOModal } from "../create-dao-modal";
 
 export const DiscoverDaoTable = () => {
   const { factoryContract } = useNear();
   const [getDaoList] = useContract(factoryContract);
   const [daoList, setDaoList] = useState<any>([]);
   const [isLoading, setLoading] = useState(true);
+  const [isModalOpen, setModalOpen] = useState(false);
 
   const fetchDaoList = async (start: number, limit: number) => {
     const list = await getDaoList(start, limit);
@@ -21,12 +22,21 @@ export const DiscoverDaoTable = () => {
 
   useEffect(() => {
     if (factoryContract)
-      fetchDaoList(0, 100);
+      fetchDaoList(0, 1000);
   }, [factoryContract])
 
   return (
     <div className="my-6 px-4 sm:px-6 lg:px-8">
       {isLoading && <Loading />}
+      <button
+        type="button"
+        className="inline-flex items-center gap-x-1.5 rounded-md bg-indigo-600 py-1.5 px-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+        onClick={() => {setModalOpen(true)}}
+      >
+        <PlusCircleIcon className="-ml-0.5 h-5 w-5" aria-hidden="true" />
+        Create DAO
+      </button>
+      <CreateDAOModal open={isModalOpen} setOpen={setModalOpen} />
       <ul role="list" className="mt-3 grid grid-cols-1 gap-6 sm:grid-cols-4 lg:grid-cols-6">
         {daoList.map((daoAddr: string) => (
           <li key={daoAddr} className="col-span-1 divide-y divide-gray-200 rounded-lg bg-white shadow">

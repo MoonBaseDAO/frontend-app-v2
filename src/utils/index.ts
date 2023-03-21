@@ -1,3 +1,6 @@
+import { FixedNumber } from "ethers";
+
+export const yoktoNear = 1000000000000000000000000;
 
 export const classNames = (...classes: any) => {
   return classes.filter(Boolean).join(' ')
@@ -15,3 +18,11 @@ export const convertDuration = (duration: number) => {
   epoch.setUTCSeconds(utcSeconds);
   return epoch;
 };
+
+export const getUserAvatarId = (userId: string) => {
+  let num = '';
+  for (let i = 0; i < userId.length; i++) {
+    num += userId.charCodeAt(i);
+  }
+  return parseInt(num) % 100;
+}
