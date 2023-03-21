@@ -6,24 +6,36 @@ import { ArchiveBoxIcon, FolderIcon } from "@heroicons/react/20/solid";
 import { PlusCircleIcon } from "@heroicons/react/24/outline";
 import { useEffect, useState } from "react";
 import { CreateDAOModal } from "../create-dao-modal";
+import { Pagination } from "@/components/pagination/pagination";
+
+const itemsPerPage = 20;
 
 export const DiscoverDaoTable = () => {
   const { factoryContract } = useNear();
-  const [getDaoList] = useContract(factoryContract);
+  const [getDaoList, getDaoCount] = useContract(factoryContract);
   const [daoList, setDaoList] = useState<any>([]);
+  const [totalDaoCount, setTotalDaoCount] = useState(0);
   const [isLoading, setLoading] = useState(true);
   const [isModalOpen, setModalOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const fetchDaoList = async (start: number, limit: number) => {
+    setLoading(true);
     const list = await getDaoList(start, limit);
+    const count = await factoryContract?.get_number_daos();
+    setTotalDaoCount(count);
     setDaoList(list);
     setLoading(false);
   }
 
   useEffect(() => {
     if (factoryContract)
-      fetchDaoList(0, 1000);
+      fetchDaoList((currentPage - 1) * itemsPerPage + 1, itemsPerPage);
   }, [factoryContract])
+  
+  useEffect(() => {
+    fetchDaoList((currentPage - 1) * itemsPerPage + 1, itemsPerPage);
+  }, [currentPage])
 
   return (
     <div className="my-6 px-4 sm:px-6 lg:px-8">
@@ -31,13 +43,13 @@ export const DiscoverDaoTable = () => {
       <button
         type="button"
         className="inline-flex items-center gap-x-1.5 rounded-md bg-indigo-600 py-1.5 px-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-        onClick={() => {setModalOpen(true)}}
+        onClick={() => { setModalOpen(true) }}
       >
         <PlusCircleIcon className="-ml-0.5 h-5 w-5" aria-hidden="true" />
         Create DAO
       </button>
       <CreateDAOModal open={isModalOpen} setOpen={setModalOpen} />
-      <ul role="list" className="mt-3 grid grid-cols-1 gap-6 sm:grid-cols-4 lg:grid-cols-6">
+      <ul role="list" className="mt-3 grid grid-cols-1 gap-6 sm:grid-cols-4 lg:grid-cols-4">
         {daoList.map((daoAddr: string) => (
           <li key={daoAddr} className="col-span-1 divide-y divide-gray-200 rounded-lg bg-white shadow">
             <div className="flex w-full items-center justify-between space-x-6 p-6">
@@ -76,6 +88,7 @@ export const DiscoverDaoTable = () => {
           </li>
         ))}
       </ul>
+      <Pagination currentPage={currentPage} setCurrentPage={setCurrentPage} itemsPerPage={itemsPerPage} totalCount={totalDaoCount} />
     </div>
   );
 }

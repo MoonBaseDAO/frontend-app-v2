@@ -1,4 +1,5 @@
 import { useNear } from '@/hooks/useNear';
+import { nearConfig, yoktoNear } from '@/utils';
 import { Dialog, Transition } from '@headlessui/react';
 import { InformationCircleIcon } from '@heroicons/react/24/outline';
 import { Dispatch, Fragment, SetStateAction, useEffect, useRef } from 'react';
@@ -9,7 +10,51 @@ interface CreateModalInterface {
 }
 
 export const CreateDAOModal = ({ open, setOpen }: CreateModalInterface) => {
-  const cancelButtonRef = useRef(null)
+  const cancelButtonRef = useRef(null);
+  const daoNameRef = useRef<any>(null);
+  const purposeRef = useRef<any>(null);
+  const councilRef = useRef<any>(null);
+  const amountRef = useRef<any>(null);
+
+  
+
+  const { factoryContract } = useNear();
+
+  const handleCreate = async () => {
+    const daoName = daoNameRef?.current?.value;
+    const purpose = purposeRef?.current?.value;
+    const council = councilRef?.current?.value;
+    const amount = parseInt(amountRef?.current?.value);
+
+    console.log(daoName, purpose, council, amount);
+
+    const argsList = {
+      config: {
+        name: daoName,
+        purpose: purpose,
+        metadata: ''
+      },
+      policy: [council]
+    };
+
+    const amountYokto = BigInt(yoktoNear) * BigInt(amount);
+    const args = Buffer.from(JSON.stringify(argsList)).toString('base64');
+
+    const params = {
+      args: {
+        name: daoName,
+        public_key: nearConfig.pk,
+        args
+      },
+      callbackUrl: `${window.location.origin}/dao/${daoName}.${nearConfig.contractName}`,
+      amount: amountYokto.toString(),
+      gas: BigInt('30000000000000').toString()
+    };
+
+    console.log(params);
+
+    await factoryContract.create(params);
+  }
 
   return (
     <Transition.Root show={open} as={Fragment}>
@@ -50,6 +95,7 @@ export const CreateDAOModal = ({ open, setOpen }: CreateModalInterface) => {
                       <div>
                         <div className="mt-2">
                           <input
+                            ref={daoNameRef}
                             type="text"
                             name="dao_name"
                             id="dao_name"
@@ -59,15 +105,17 @@ export const CreateDAOModal = ({ open, setOpen }: CreateModalInterface) => {
                         </div>
                         <div className="mt-2">
                           <input
+                            ref={purposeRef}
                             type="text"
                             name="dao_purpose"
                             id="dao_purpose"
                             className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                            placeholder="Enter purpose"
+                            placeholder="Enter purpose (longer than 20 characters)"
                           />
                         </div>
                         <div className="mt-2">
                           <input
+                            ref={councilRef}
                             type="text"
                             name="dao_council"
                             id="dao_council"
@@ -77,11 +125,12 @@ export const CreateDAOModal = ({ open, setOpen }: CreateModalInterface) => {
                         </div>
                         <div className="mt-2">
                           <input
+                            ref={amountRef}
                             type="text"
                             name="dao_amount"
                             id="dao_amount"
                             className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                            placeholder="Amount to transfer to the DAO"
+                            placeholder="Amount to transfer to the DAO (minimum 5)"
                           />
                         </div>
                       </div>
@@ -92,7 +141,7 @@ export const CreateDAOModal = ({ open, setOpen }: CreateModalInterface) => {
                   <button
                     type="button"
                     className="inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 sm:ml-3 sm:w-auto"
-                    onClick={() => setOpen(false)}
+                    onClick={handleCreate}
                   >
                     Creat DAO
                   </button>
